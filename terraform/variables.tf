@@ -84,3 +84,29 @@ variable "dns_zone_id" {
   description = "Existing DNS zone ID in Yandex Cloud for app domain"
   type        = string
 }
+
+variable "datadog_api_key" {
+  description = "Datadog API key"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "datadog_app_key" {
+  description = "Datadog application key"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "datadog_site" {
+  description = "Datadog site domain suffix"
+  type        = string
+  default     = "datadoghq.eu"
+}
+
+variable "datadog_monitor_enabled" {
+  description = "Create Datadog monitor via Terraform"
+  type        = bool
+  default     = false
+}

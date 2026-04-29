@@ -37,3 +37,8 @@ output "app_domain_url" {
   description = "HTTPS URL of application domain"
   value       = "https://${var.app_domain}"
 }
+
+output "datadog_monitor_id" {
+  description = "Datadog monitor ID for HTTP health"
+  value       = var.datadog_monitor_enabled ? datadog_monitor.app_http_health[0].id : null
+}

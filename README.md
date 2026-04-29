@@ -142,3 +142,35 @@ make output
 - в `make output` есть `app_domain_url`
 
 Текущий URL приложения: `https://www.hexlet-tutorial.ru`
+
+## Мониторинг (Задание 5)
+
+### Что добавлено
+
+- Установка Datadog Agent через Ansible роль `datadog.datadog` (тег `monitoring`)
+- HTTP check в агенте: запрос на `http://localhost:80` на каждом сервере
+- Terraform монитор `datadog_monitor` по service check `http.can_connect`
+
+### Что нужно заполнить
+
+- В `ansible/group_vars_all_vault.yml`:
+  - `datadog_api_key` (зашифрованный vault-параметр)
+- В `terraform/terraform.tfvars`:
+  - `datadog_api_key`
+  - `datadog_app_key`
+  - `datadog_site` (например `datadoghq.eu`)
+  - `datadog_monitor_enabled = true`
+
+### Команды
+
+```bash
+# Установить роль/коллекцию
+make ansible-install
+
+# Установить Datadog Agent на VM
+make ansible-monitoring
+
+# Создать monitor в Datadog через Terraform
+make plan
+make apply
+```

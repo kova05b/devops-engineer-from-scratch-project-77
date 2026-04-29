@@ -16,3 +16,9 @@ lb_domain    = "project-77.local"
 certificate_id = "fpqb8dmi010ehoic1cv0"
 app_domain   = "app.example.com"
 dns_zone_id  = "replace-with-dns-zone-id"
+
+# Datadog (for task 5 monitor)
+datadog_api_key = "replace-with-datadog-api-key"
+datadog_app_key = "replace-with-datadog-app-key"
+datadog_site    = "datadoghq.eu"
+datadog_monitor_enabled = true

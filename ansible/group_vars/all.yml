@@ -3,3 +3,4 @@ app_image: "nginx:1.27-alpine"
 app_container_name: "project77-app"
 app_container_port: 80
 app_host_port: 80
+datadog_site: "datadoghq.eu"

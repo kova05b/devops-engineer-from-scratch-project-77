@@ -3,6 +3,18 @@
   hosts: web
   become: true
 
+  roles:
+    - role: datadog.datadog
+      tags: [monitoring]
+      vars:
+        datadog_checks:
+          http_check:
+            init_config: {}
+            instances:
+              - name: app-local-health
+                url: "http://localhost:80"
+                timeout: 5
+
   tasks:
     - name: Install Docker packages
       ansible.builtin.apt:
