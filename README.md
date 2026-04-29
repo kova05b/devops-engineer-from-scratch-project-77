@@ -80,6 +80,7 @@ make destroy
 
 ```bash
 make ansible-install
+make ansible-vars
 make ansible-inventory
 make ansible-ping
 make ansible-prepare
@@ -97,7 +98,8 @@ make apply
 # 2. Установить коллекции Ansible
 make ansible-install
 
-# 3. Сгенерировать inventory из terraform output
+# 3. Сгенерировать файл переменных и inventory из terraform output
+make ansible-vars
 make ansible-inventory
 
 # 4. Проверить доступность хостов
@@ -189,3 +191,16 @@ make apply
 ```bash
 make ansible-availability
 ```
+
+## Чек-лист перед сдачей
+
+- GitHub Actions бейдж в `README.md` должен быть зеленым после пуша.
+- Все Terraform файлы находятся в `terraform/`, Ansible файлы — в `ansible/`.
+- Секреты не в открытом виде в репозитории:
+  - `terraform/terraform.tfvars` не коммитится,
+  - vault-данные зашифрованы.
+- Переменные Terraform передаются в Ansible через генерацию файла:
+  - `make ansible-vars` создает `ansible/group_vars/terraform_generated.yml`.
+- Основной плейбук расположен в `ansible/playbook.yml`.
+- В `README.md` есть инструкции подготовки и запуска, а также ссылка на приложение:
+  - `https://www.hexlet-tutorial.ru`.

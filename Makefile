@@ -6,7 +6,7 @@ ANSIBLE_ENV=ANSIBLE_HOST_KEY_CHECKING=False
 ANSIBLE_SSH_KEY=/home/administrator/.ssh/id_ed25519
 ANSIBLE_VAULT_ARGS=
 
-.PHONY: init fmt validate plan apply destroy output ansible-install ansible-inventory ansible-ping ansible-prepare ansible-deploy ansible-monitoring ansible-availability
+.PHONY: init fmt validate plan apply destroy output ansible-install ansible-vars ansible-inventory ansible-ping ansible-prepare ansible-deploy ansible-monitoring ansible-availability
 
 init:
 	cd $(TF_DIR) && $(TF) init
@@ -31,6 +31,9 @@ output:
 
 ansible-install:
 	cd $(ANSIBLE_DIR) && ansible-galaxy role install -r requirements.yml && ansible-galaxy collection install -r requirements.yml
+
+ansible-vars:
+	python3 -c "import json, pathlib, subprocess; o=json.loads(subprocess.check_output(['terraform','-chdir=terraform','output','-json'], text=True)); p=pathlib.Path('ansible/group_vars/terraform_generated.yml'); p.parent.mkdir(parents=True, exist_ok=True); p.write_text('---\\nalb_public_ip: \"{}\"\\napp_domain_url: \"{}\"\\n'.format(o['alb_public_ip']['value'], o.get('app_domain_url', {}).get('value', '')), encoding='utf-8')"
 
 ansible-inventory:
 	printf "[web]\nweb-1 ansible_host=%s ansible_user=ubuntu ansible_ssh_private_key_file=%s\nweb-2 ansible_host=%s ansible_user=ubuntu ansible_ssh_private_key_file=%s ansible_ssh_common_args='-o ProxyJump=ubuntu@%s -o StrictHostKeyChecking=no'\n" "$$(cd $(TF_DIR) && $(TF) output -raw web_1_public_ip)" "$(ANSIBLE_SSH_KEY)" "$$(cd $(TF_DIR) && $(TF) output -raw web_2_private_ip)" "$(ANSIBLE_SSH_KEY)" "$$(cd $(TF_DIR) && $(TF) output -raw web_1_public_ip)" > $(ANSIBLE_DIR)/inventory.ini

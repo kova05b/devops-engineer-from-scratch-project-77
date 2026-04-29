@@ -9,3 +9,4 @@ terraform.tfvars
 # Local secret files
 .env
 ansible/.vault_pass*
+ansible/group_vars/terraform_generated.yml
