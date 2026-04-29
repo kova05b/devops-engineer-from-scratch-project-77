@@ -1,7 +1,11 @@
 TF_DIR=terraform
 TF=terraform
+ANSIBLE_DIR=ansible
+ANSIBLE_PLAYBOOK=playbook.yml
+ANSIBLE_ENV=ANSIBLE_HOST_KEY_CHECKING=False
+ANSIBLE_SSH_KEY=/home/administrator/.ssh/id_ed25519
 
-.PHONY: init fmt validate plan apply destroy output
+.PHONY: init fmt validate plan apply destroy output ansible-install ansible-inventory ansible-ping ansible-prepare ansible-deploy
 
 init:
 	cd $(TF_DIR) && $(TF) init
@@ -23,3 +27,18 @@ destroy:
 
 output:
 	cd $(TF_DIR) && $(TF) output
+
+ansible-install:
+	cd $(ANSIBLE_DIR) && ansible-galaxy collection install -r requirements.yml
+
+ansible-inventory:
+	printf "[web]\nweb-1 ansible_host=%s ansible_user=ubuntu ansible_ssh_private_key_file=%s\nweb-2 ansible_host=%s ansible_user=ubuntu ansible_ssh_private_key_file=%s ansible_ssh_common_args='-o ProxyJump=ubuntu@%s -o StrictHostKeyChecking=no'\n" "$$(cd $(TF_DIR) && $(TF) output -raw web_1_public_ip)" "$(ANSIBLE_SSH_KEY)" "$$(cd $(TF_DIR) && $(TF) output -raw web_2_private_ip)" "$(ANSIBLE_SSH_KEY)" "$$(cd $(TF_DIR) && $(TF) output -raw web_1_public_ip)" > $(ANSIBLE_DIR)/inventory.ini
+
+ansible-ping:
+	cd $(ANSIBLE_DIR) && $(ANSIBLE_ENV) ansible -i inventory.ini web -m ping
+
+ansible-prepare:
+	cd $(ANSIBLE_DIR) && $(ANSIBLE_ENV) ansible-playbook -i inventory.ini $(ANSIBLE_PLAYBOOK) --tags prepare
+
+ansible-deploy:
+	cd $(ANSIBLE_DIR) && $(ANSIBLE_ENV) ansible-playbook -i inventory.ini $(ANSIBLE_PLAYBOOK) --tags deploy

@@ -63,3 +63,47 @@ make destroy
 - Конфигурация backend: `terraform/backend.tf`
 - Секреты передаются снаружи (`terraform.tfvars`, переменные окружения, vault)
 - Локальные state-файлы не попадают в git
+
+## Деплой Ansible (Задание 3)
+
+### Что добавлено
+
+- Основной плейбук: `ansible/playbook.yml`
+- Требуемые коллекции: `ansible/requirements.yml`
+- Инвентори: `ansible/inventory.ini` (генерируется из Terraform outputs)
+- `web-2` подключается по SSH через `web-1` (ProxyJump), потому что `web-2` без публичного IP
+- Теги в плейбуке:
+  - `prepare` — установка Docker и зависимостей
+  - `deploy` — запуск контейнера через `community.general.docker_container`
+
+### Команды Makefile для Ansible
+
+```bash
+make ansible-install
+make ansible-inventory
+make ansible-ping
+make ansible-prepare
+make ansible-deploy
+```
+
+По умолчанию используется SSH-ключ `/home/administrator/.ssh/id_ed25519` (переменная `ANSIBLE_SSH_KEY` в `Makefile`).
+
+### Порядок деплоя
+
+```bash
+# 1. Поднять инфраструктуру Terraform
+make apply
+
+# 2. Установить коллекции Ansible
+make ansible-install
+
+# 3. Сгенерировать inventory из terraform output
+make ansible-inventory
+
+# 4. Проверить доступность хостов
+make ansible-ping
+
+# 5. Подготовить серверы и задеплоить приложение
+make ansible-prepare
+make ansible-deploy
+```

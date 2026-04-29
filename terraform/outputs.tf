@@ -3,6 +3,21 @@ output "web_vm_public_ips" {
   value       = { for k, vm in yandex_compute_instance.web : k => vm.network_interface[0].nat_ip_address }
 }
 
+output "web_1_public_ip" {
+  description = "Public IP of web-1 VM"
+  value       = yandex_compute_instance.web["web-1"].network_interface[0].nat_ip_address
+}
+
+output "web_2_public_ip" {
+  description = "Public IP of web-2 VM"
+  value       = yandex_compute_instance.web["web-2"].network_interface[0].nat_ip_address
+}
+
+output "web_2_private_ip" {
+  description = "Private IP of web-2 VM"
+  value       = yandex_compute_instance.web["web-2"].network_interface[0].ip_address
+}
+
 output "web_vm_private_ips" {
   description = "Private IPs of web VMs"
   value       = { for k, vm in yandex_compute_instance.web : k => vm.network_interface[0].ip_address }

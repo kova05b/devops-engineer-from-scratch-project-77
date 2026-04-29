@@ -58,7 +58,7 @@ resource "yandex_compute_instance" "web" {
 
   network_interface {
     subnet_id          = data.yandex_vpc_subnet.selected.id
-    nat                = true
+    nat                = each.key == "web-1"
     security_group_ids = [yandex_vpc_security_group.web.id]
   }
 
