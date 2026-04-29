@@ -1,0 +1,11 @@
+# Terraform local artifacts
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+terraform.tfvars
+*.auto.tfvars
+
+# Local secret files
+.env
+ansible/.vault_pass*
