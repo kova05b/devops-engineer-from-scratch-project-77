@@ -117,6 +117,7 @@ resource "yandex_alb_http_router" "web" {
 resource "yandex_alb_virtual_host" "web" {
   name           = "${var.project_name}-vhost"
   http_router_id = yandex_alb_http_router.web.id
+  authority      = [var.app_domain]
 
   route {
     name = "default-route"

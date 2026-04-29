@@ -107,3 +107,38 @@ make ansible-ping
 make ansible-prepare
 make ansible-deploy
 ```
+
+## Домен и HTTPS (Задание 4)
+
+### Что добавлено в Terraform
+
+- `terraform/dns.tf` — создается DNS A-запись домена на публичный IP ALB
+- `terraform/main.tf` — ALB виртуальный хост привязан к `app_domain`
+- `terraform/outputs.tf` — вывод `app_domain_url`
+
+### Что нужно заполнить
+
+В `terraform/terraform.tfvars` укажите:
+
+- `app_domain` — полный домен приложения (например `app.example.com`)
+- `dns_zone_id` — ID DNS-зоны в Yandex Cloud
+- `certificate_id` — ID сертификата Certificate Manager, выпущенного на ваш домен
+
+### Порядок действий
+
+```bash
+# 1) Зарегистрировать домен у регистратора
+# 2) Делегировать домен на NS-серверы Yandex Cloud
+# 3) Создать/проверить сертификат в Certificate Manager для app_domain
+# 4) Применить Terraform
+make plan
+make apply
+make output
+```
+
+Проверка:
+
+- откройте `https://<app_domain>`
+- в `make output` есть `app_domain_url`
+
+Текущий URL приложения: `https://www.hexlet-tutorial.ru`

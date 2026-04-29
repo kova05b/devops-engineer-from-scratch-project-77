@@ -74,3 +74,13 @@ variable "certificate_id" {
   type        = string
   default     = "fpqb8dmi010ehoic1cv0"
 }
+
+variable "app_domain" {
+  description = "Application domain (FQDN) that points to ALB"
+  type        = string
+}
+
+variable "dns_zone_id" {
+  description = "Existing DNS zone ID in Yandex Cloud for app domain"
+  type        = string
+}

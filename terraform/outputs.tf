@@ -32,3 +32,8 @@ output "https_url" {
   description = "HTTPS endpoint URL"
   value       = "https://${one(yandex_alb_load_balancer.web.listener).endpoint[0].address[0].external_ipv4_address[0].address}"
 }
+
+output "app_domain_url" {
+  description = "HTTPS URL of application domain"
+  value       = "https://${var.app_domain}"
+}
