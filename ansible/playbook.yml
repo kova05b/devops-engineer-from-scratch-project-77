@@ -57,3 +57,18 @@
         published_ports:
           - "{{ app_host_port }}:{{ app_container_port }}"
       tags: [deploy]
+
+    - name: Install curl for Upmon heartbeat
+      ansible.builtin.apt:
+        name: curl
+        state: present
+        update_cache: true
+      tags: [availability]
+
+    - name: Configure Upmon heartbeat cron check
+      ansible.builtin.cron:
+        name: "project77-upmon-heartbeat"
+        minute: "{{ upmon_cron_minute }}"
+        user: root
+        job: "curl -fsS {{ upmon_monitor_url }} >/dev/null && curl -fsS {{ upmon_check_url }} >/dev/null"
+      tags: [availability]

@@ -4,3 +4,6 @@ app_container_name: "project77-app"
 app_container_port: 80
 app_host_port: 80
 datadog_site: "datadoghq.eu"
+upmon_check_url: "https://upmon.net/0305652c-7def-4572-8dd5-fe96a910cffb"
+upmon_monitor_url: "https://www.hexlet-tutorial.ru"
+upmon_cron_minute: "*/5"

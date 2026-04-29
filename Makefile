@@ -6,7 +6,7 @@ ANSIBLE_ENV=ANSIBLE_HOST_KEY_CHECKING=False
 ANSIBLE_SSH_KEY=/home/administrator/.ssh/id_ed25519
 ANSIBLE_VAULT_ARGS=
 
-.PHONY: init fmt validate plan apply destroy output ansible-install ansible-inventory ansible-ping ansible-prepare ansible-deploy ansible-monitoring
+.PHONY: init fmt validate plan apply destroy output ansible-install ansible-inventory ansible-ping ansible-prepare ansible-deploy ansible-monitoring ansible-availability
 
 init:
 	cd $(TF_DIR) && $(TF) init
@@ -46,3 +46,6 @@ ansible-deploy:
 
 ansible-monitoring:
 	cd $(ANSIBLE_DIR) && DATADOG_API_KEY="$$(python3 -c "import re; t=open('../terraform/terraform.tfvars', encoding='utf-8').read(); m=re.search(r'^datadog_api_key\\s*=\\s*\\\"([^\\\"]+)\\\"', t, re.M); print(m.group(1) if m else '')")" $(ANSIBLE_ENV) ansible-playbook -i inventory.ini $(ANSIBLE_PLAYBOOK) --tags monitoring --extra-vars "datadog_api_key=$$DATADOG_API_KEY" $(ANSIBLE_VAULT_ARGS)
+
+ansible-availability:
+	cd $(ANSIBLE_DIR) && $(ANSIBLE_ENV) ansible-playbook -i inventory.ini $(ANSIBLE_PLAYBOOK) --tags availability $(ANSIBLE_VAULT_ARGS)

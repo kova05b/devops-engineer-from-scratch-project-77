@@ -174,3 +174,18 @@ make ansible-monitoring
 make plan
 make apply
 ```
+
+## Доступность сервиса (Задание 6)
+
+### Что добавлено
+
+- Upmon check создан: `project-77-hexlet-tutorial`
+- В Ansible добавлен cron heartbeat (тег `availability`):
+  - каждые 5 минут проверяет `https://www.hexlet-tutorial.ru`
+  - при успехе отправляет ping в Upmon URL
+
+### Команда
+
+```bash
+make ansible-availability
+```
