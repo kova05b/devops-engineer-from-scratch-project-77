@@ -1,0 +1,16 @@
+yc_token     = "replace-with-iam-token"
+yc_cloud_id  = "replace-with-cloud-id"
+yc_folder_id = "replace-with-folder-id"
+yc_zone      = "ru-central1-a"
+
+# Existing resources to reuse
+network_name = "project-devops-deploy-net"
+subnet_name  = "project-devops-deploy-subnet"
+
+# SSH key for VM access
+ssh_public_key = "ssh-ed25519 AAAA... user@host"
+
+# Optional
+project_name = "project-77"
+lb_domain    = "project-77.local"
+certificate_id = "fpqb8dmi010ehoic1cv0"

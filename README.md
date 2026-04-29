@@ -1,16 +1,65 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/kova05b/devops-engineer-from-scratch-project-77/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/kova05b/devops-engineer-from-scratch-project-77/actions)
 
-## Task 1 bootstrap
+## DevOps Проект 77
 
-Project structure for the first task:
+### Что разворачивается (Задание 2)
 
-- `terraform/` - Terraform infrastructure files
-- `ansible/` - Ansible files and vault secrets
+- 2 виртуальные машины с Nginx (`project-77-web-1`, `project-77-web-2`)
+- HTTPS Application Load Balancer перед виртуальными машинами
+- Удаленный Terraform state в существующем бакете Yandex Object Storage `projectdevopsdeploy`
+- Переиспользуются существующие сетевые ресурсы:
+  - `project-devops-deploy-net`
+  - `project-devops-deploy-subnet`
+- Переиспользуется существующий сертификат Certificate Manager (`certificate_id`)
 
-Implemented requirements:
+Приложение в этом задании простое (статическая страница Nginx), поэтому Managed PostgreSQL не требуется.
 
-- Provider settings are in `terraform/provider.tf`
-- Backend settings are in `terraform/backend.tf`
-- Sensitive values are expected from external variables (`terraform.tfvars` or env vars)
-- Terraform local state files are ignored by git
+### Структура проекта
+
+- `terraform/` - Terraform-файлы инфраструктуры
+- `ansible/` - Ansible и Vault-файлы
+- `Makefile` - часто используемые Terraform-команды
+
+### Быстрый запуск
+
+1) Подготовьте переменные:
+
+- Скопируйте `terraform/terraform.tfvars.example` в `terraform/terraform.tfvars`
+- Заполните реальные значения (`yc_token`, ID облака/каталога, SSH-ключ)
+- При необходимости задайте `certificate_id` (по умолчанию используется существующий сертификат)
+
+2) Инициализация и проверка:
+
+```bash
+make init
+make fmt
+make validate
+```
+
+3) Создание инфраструктуры:
+
+```bash
+make plan
+make apply
+make output
+```
+
+4) Проверка:
+
+- Получите IP балансировщика из `make output` (`https_url`)
+- Откройте `https://<alb_ip>` в браузере (предупреждение о self-signed сертификате — ожидаемо)
+- Обновите страницу несколько раз: в ответе должно меняться имя VM
+
+5) Удаление инфраструктуры:
+
+```bash
+make destroy
+```
+
+### Примечания про backend и секреты
+
+- Конфигурация провайдера: `terraform/provider.tf`
+- Конфигурация backend: `terraform/backend.tf`
+- Секреты передаются снаружи (`terraform.tfvars`, переменные окружения, vault)
+- Локальные state-файлы не попадают в git
